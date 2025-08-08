@@ -5,6 +5,44 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Pencarian Data Peserta JPKM</title>
   <style>
+    #name {
+  width: 300px;  /* atau sesuai sebelumnya */
+  height: 38px;
+  padding: 8px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+    .form-group {
+  width: 100%;
+  margin-bottom: 15px;
+  text-align: left;
+  position: relative; /* Tambahkan ini */
+}  
+    .autocomplete-items {
+  position: absolute;
+  border: 1px solid #d4d4d4;
+  border-top: none;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 99;
+  background-color: white;
+  list-style: none;
+  padding-left: 0;
+  width: 100%;
+  margin-top: 0;
+}
+
+.autocomplete-items li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.autocomplete-items li:hover {
+  background-color: #e9e9e9;
+}
+    
+
     body {
       font-family: Arial, sans-serif;
       padding: 5px;
@@ -47,7 +85,6 @@
       font-weight: bold;
     }
 
-    input[type="text"],
     input[type="date"],
     select {
       width: 100%;
@@ -174,9 +211,9 @@
     .kartu-platinum .masaberlaku { top: 247px; left: 318px; }
 
     /* Paket KEUSKUPAN */
-    .kartu-keuskupan .nama        { top: 115px; left: 52px; }
-    .kartu-keuskupan .nojpkm      { top: 132px; left: 52px; }
-    .kartu-keuskupan .namagrup    { top: 150px; left: 52px; }
+    .kartu-keuskupan .nama        { top: 100px; left: 52px; }
+    .kartu-keuskupan .nojpkm      { top: 120px; left: 52px; }
+    .kartu-keuskupan .namagrup    { top: 140px; left: 52px; }
     .kartu-keuskupan .ppkbasis    { top: 168px; left: 150px; }
     .kartu-keuskupan .tgllahir    { top: 236px; left: 150px; }
     .kartu-keuskupan .klinik      { top: 187px; left: 150px; }
@@ -185,89 +222,101 @@
     .kartu-keuskupan .masaberlaku { top: 247px; left: 318px; }
 
     @media only screen and (max-width: 600px) {
-  .kartu-siswa .nama        { top: 90px; left: 42px; }
-  .kartu-siswa .nojpkm      { top: 103px; left: 42px; }
-  .kartu-siswa .namagrup    { top: 116px; left: 42px; }
-  .kartu-siswa .ppkbasis    { top: 131px; left: 118px; }
-  .kartu-siswa .tgllahir    { top: 120px; left: 289px; } /* ubah dari right jadi left */
-  .kartu-siswa .klinik      { top: 145px; left: 118px; }
-  .kartu-siswa .plafon      { top: 158px; left: 118px; }
-  .kartu-siswa .gigi        { top: 169px; left: 1180px; }
-  .kartu-siswa .masaberlaku { top: 184px; left: 118px; }
-  .kartu-siswa .namapaket   { top: 210px; left: 50%; transform: translateX(-50%); text-align: center; }
+    .kartu-siswa .nama        { top: 18%; left: 11%; }
+    .kartu-siswa .nojpkm      { top: 21%; left: 11%; }
+    .kartu-siswa .namagrup    { top: 24%; left: 11%; }
+    .kartu-siswa .ppkbasis    { top: 27.3%; left: 30%; }
+    .kartu-siswa .tgllahir    { top: 25%; right: 11%; }
+    .kartu-siswa .klinik      { top: 30%; left: 30%; }
+    .kartu-siswa .plafon      { top: 33%; left: 30%; }
+    .kartu-siswa .gigi        { top: 35.5%; left: 30%; }
+    .kartu-siswa .masaberlaku { top: 38.5%; left: 26%; }
+    .kartu-siswa .namapaket   { top: 44%; font-size: calc(11px + 0.6vw); }
 }
     @media only screen and (max-width: 600px) {
-  .kartu-dasarplus .nama        { top: 90px; left: 42px; }
-  .kartu-dasarplus .nojpkm      { top: 103px; left: 42px; }
-  .kartu-dasarplus .namagrup    { top: 116px; left: 42px; }
-  .kartu-dasarplus .ppkbasis    { top: 131px; left: 118px; }
-  .kartu-dasarplus .tgllahir    { top: 185px; left: 118px; }
-  .kartu-dasarplus .klinik      { top: 145px; left: 118px; }
-  .kartu-dasarplus .plafon      { top: 158px; left: 118px; }
-  .kartu-dasarplus .gigi        { top: 170px; left: 118px; }
-  .kartu-dasarplus .masaberlaku { top: 194px; left: 249px; }
+  .kartu-dasarplus .nama        { top: 18.3%; left: 11%; }
+  .kartu-dasarplus .nojpkm      { top: 21%; left: 11%; }
+  .kartu-dasarplus .namagrup    { top: 24%; left: 11%; }
+  .kartu-dasarplus .ppkbasis    { top: 27.3%; left: 30%; }
+  .kartu-dasarplus .tgllahir    { top: 38%; left: 30%; }
+  .kartu-dasarplus .klinik      { top: 30%; left: 30%; }
+  .kartu-dasarplus .plafon      { top: 33%; left: 30%; }
+  .kartu-dasarplus .gigi        { top: 35.5%; left: 30%; }
+  .kartu-dasarplus .masaberlaku { top: 40.4%; left: 64%; font-size: calc(6.5px + 0.5vw); }
   .kartu-dasarplus .namapaket   { top: 210px; left: 50%; transform: translateX(-50%); text-align: center; }
 }
     @media only screen and (max-width: 600px) {
-  .kartu-mix .nama        { top: 90px; left: 42px; }
-  .kartu-mix .nojpkm      { top: 103px; left: 42px; }
-  .kartu-mix .namagrup    { top: 116px; left: 42px; }
-  .kartu-mix .ppkbasis    { top: 131px; left: 118px; }
-  .kartu-mix .tgllahir    { top: 180px; left: 118px; }
-  .kartu-mix .klinik      { top: 145px; left: 118px; }
-  .kartu-mix .plafon      { top: 158px; left: 118px; }
-  .kartu-mix .gigi        { top: 170px; left: 118px; }
-  .kartu-mix .masaberlaku { top: 194px; left: 249px; }
-  .kartu-mix .namapaket   { top: 210px; left: 50%; transform: translateX(-50%); text-align: center; }
+  .kartu-mix .nama        { top: 18.3%; left: 11%; }
+  .kartu-mix .nojpkm      { top: 21%; left: 11%; }
+  .kartu-mix .namagrup    { top: 24%; left: 11%; }
+  .kartu-mix .ppkbasis    { top: 27.3%; left: 30%; }
+  .kartu-mix .tgllahir    { top: 38%; left: 30%; }
+  .kartu-mix .klinik      { top: 30%; left: 30%; }
+  .kartu-mix .plafon      { top: 33%; left: 30%; }
+  .kartu-mix .gigi        { top: 35.5%; left: 30%; }
+  .kartu-mix .masaberlaku { top: 40.4%; left: 64%; font-size: calc(6.5px + 0.5vw); }
+  .kartu-mix .namapaket   { top: 44%; font-size: calc(11px + 0.5vw); }
 }
     @media only screen and (max-width: 600px) {
-  .kartu-primer .nama        { top: 90px; left: 42px; }
-  .kartu-primer .nojpkm      { top: 103px; left: 42px; }
-  .kartu-primer .namagrup    { top: 116px; left: 42px; }
-  .kartu-primer .ppkbasis    { top: 131px; left: 118px; }
-  .kartu-primer .tgllahir    { top: 183px; left: 118px; }
-  .kartu-primer .klinik      { top: 145px; left: 118px; }
-  .kartu-primer .plafon      { top: 158px; left: 118px; }
-  .kartu-primer .gigi        { top: 170px; left: 118px; }
-  .kartu-primer .masaberlaku { top: 194px; left: 249px; }
+  .kartu-primer .nama        { top: 18.3%; left: 11%; }
+  .kartu-primer .nojpkm      { top: 21%; left: 11%; }
+  .kartu-primer .namagrup    { top: 24%; left: 11%; }
+  .kartu-primer .ppkbasis    { top: 27.3%; left: 30%; }
+  .kartu-primer .tgllahir    { top: 38.5%; left: 30%; }
+  .kartu-primer .klinik      { top: 30%; left: 30%; }
+  .kartu-primer .plafon      { top: 32.5%; left: 30%; }
+  .kartu-primer .gigi        { top: 35.5%; left: 30%; }
+  .kartu-primer .masaberlaku { top: 40.4%; left: 64%; font-size: calc(6.5px + 0.5vw); }
   .kartu-primer .namapaket   { top: 210px; left: 50%; transform: translateX(-50%); text-align: center; }
 }
     @media only screen and (max-width: 600px) {
-  .kartu-advanced .nama        { top: 90px; left: 42px; }
-  .kartu-advanced .nojpkm      { top: 103px; left: 42px; }
-  .kartu-advanced .namagrup    { top: 116px; left: 42px; }
-  .kartu-advanced .ppkbasis    { top: 131px; left: 118px; }
-  .kartu-advanced .tgllahir    { top: 183px; left: 118px; }
-  .kartu-advanced .klinik      { top: 145px; left: 118px; }
-  .kartu-advanced .plafon      { top: 158px; left: 118px; }
-  .kartu-advanced .gigi        { top: 170px; left: 118px; }
-  .kartu-advanced .masaberlaku { top: 180px; left: 249px; }
+  .kartu-advanced .nama        { top: 19%; left: 11%; }
+  .kartu-advanced .nojpkm      { top: 21%; left: 11%; }
+  .kartu-advanced .namagrup    { top: 24%; left: 11%; }
+  .kartu-advanced .ppkbasis    { top: 27.3%; left: 30%; }
+  .kartu-advanced .tgllahir    { top: 38%; left: 30%; }
+  .kartu-advanced .klinik      { top: 30%; left: 30%; }
+  .kartu-advanced .plafon      { top: 33%; left: 30%; }
+  .kartu-advanced .gigi        { top: 35.5%; left: 30%; }
+  .kartu-advanced .masaberlaku { top: 40.4%; left: 64%; font-size: calc(6.5px + 0.5vw); }
   .kartu-advanced .namapaket   { top: 210px; left: 50%; transform: translateX(-50%); text-align: center; }
 }
     @media only screen and (max-width: 600px) {
-  .kartu-executive .nama        { top: 90px; left: 42px; }
-  .kartu-executive .nojpkm      { top: 103px; left: 42px; }
-  .kartu-executive .namagrup    { top: 116px; left: 42px; }
-  .kartu-executive .ppkbasis    { top: 131px; left: 118px; }
-  .kartu-executive .tgllahir    { top: 183px; left: 118px; }
-  .kartu-executive .klinik      { top: 145px; left: 118px; }
-  .kartu-executive .plafon      { top: 158px; left: 118px; }
-  .kartu-executive .gigi        { top: 170px; left: 118px; }
-  .kartu-executive .masaberlaku { top: 185px; left: 249px; }
+  .kartu-executive .nama        { top: 18.3%; left: 11%; }
+  .kartu-executive .nojpkm      { top: 21.5%; left: 11%; }
+  .kartu-executive .namagrup    { top: 24%; left: 11%; }
+  .kartu-executive .ppkbasis    { top: 27.3%; left: 30%; }
+  .kartu-executive .tgllahir    { top: 38%; left: 30%; }
+  .kartu-executive .klinik      { top: 30%; left: 30%; }
+  .kartu-executive .plafon      { top: 33%; left: 30%; }
+  .kartu-executive .gigi        { top: 35.5%; left: 30%; }
+  .kartu-executive .masaberlaku { top: 40.4%; left: 64%; font-size: calc(6.5px + 0.5vw); }
   .kartu-executive .namapaket   { top: 210px; left: 50%; transform: translateX(-50%); text-align: center; }
 }
     @media only screen and (max-width: 600px) {
-  .kartu-platinum .nama        { top: 90px; left: 42px; }
-  .kartu-platinum .nojpkm      { top: 103px; left: 42px; }
-  .kartu-platinum .namagrup    { top: 116px; left: 42px; }
-  .kartu-platinum .ppkbasis    { top: 131px; left: 118px; }
-  .kartu-platinum .tgllahir    { top: 183px; left: 118px; }
-  .kartu-platinum .klinik      { top: 145px; left: 118px; }
-  .kartu-platinum .plafon      { top: 158px; left: 118px; }
-  .kartu-platinum .gigi        { top: 198px; left: 100px; }
-  .kartu-platinum .masaberlaku { top: 185px; left: 249px; }
+  .kartu-platinum .nama        { top: 18.3%; left: 11%; }
+  .kartu-platinum .nojpkm      { top: 21%; left: 11%; }
+  .kartu-platinum .namagrup    { top: 24%; left: 11%; }
+  .kartu-platinum .ppkbasis    { top: 27.3%; left: 30%; }
+  .kartu-platinum .tgllahir    { top: 38%; left: 30%; }
+  .kartu-platinum .klinik      { top: 30%; left: 30%; }
+  .kartu-platinum .plafon      { top: 33%; left: 30%; }
+  .kartu-platinum .gigi        { top: 35.5%; left: 30%; }
+  .kartu-platinum .masaberlaku { top: 40.4%; left: 64%; font-size: calc(6.5px + 0.5vw); }
   .kartu-platinum .namapaket   { top: 210px; left: 50%; transform: translateX(-50%); text-align: center; }
 }
+     @media only screen and (max-width: 600px) {
+  .kartu-keuskupan .nama        { top: 18.3%; left: 11%; }
+  .kartu-keuskupan .nojpkm      { top: 21%; left: 11%; }
+  .kartu-keuskupan .namagrup    { top: 24%; left: 11%; }
+  .kartu-keuskupan .ppkbasis    { top: 27.3%; left: 30%; }
+  .kartu-keuskupan .tgllahir    { top: 38%; left: 30%; }
+  .kartu-keuskupan .klinik      { top: 30%; left: 30%; }
+  .kartu-keuskupan .plafon      { top: 33%; left: 30%; }
+  .kartu-keuskupan .gigi        { top: 35.5%; left: 30%; }
+  .kartu-keuskupan .masaberlaku { top: 40.4%; left: 64%; font-size: calc(6.5px + 0.5vw); }
+  .kartu-keuskupan .namapaket   { top: 210px; left: 50%; transform: translateX(-50%); text-align: center; }
+}    
    @media only screen and (max-width: 600px) {
     .text-field {
       font-size: 10px; /* Atur sesuai kebutuhan */
@@ -281,10 +330,12 @@
     <h2>Pencarian Data Peserta JPKM</h2>
 
   <form id="identity-form">
-  <div class="form-group">
-    <label for="name">Nama Peserta:</label>
-    <input type="text" id="name" />
-  </div>
+  <!-- Form Pencarian Nama Peserta -->
+<div class="form-group">
+  <label for="name">Nama Peserta:</label>
+  <input type="text" id="name" placeholder="Ketik nama peserta..." autocomplete="off" />
+  <ul id="autocomplete-list" class="autocomplete-items"></ul>
+</div>
    <div class="form-group">
     <label for="birthdate">Tanggal Lahir:</label>
     <input type="date" id="birthdate" />
@@ -321,6 +372,48 @@
     </div>
    </div> <!-- Ini penutup .container -->
   <script src="script.js"></script>
+
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+  const nameInput = document.getElementById("name");
+  const autocompleteList = document.getElementById("autocomplete-list");
+  let pesertaList = [];
+
+  fetch("Peserta%20JPKM%20s.d%2010%20Juli%202025%20New.json")
+    .then((response) => response.json())
+    .then((data) => {
+      pesertaList = (data["Peserta_11-07-2025"] || []).map(item => item["Nama Member"]);
+    });
+
+  nameInput.addEventListener("input", function () {
+    const input = this.value.toLowerCase();
+    autocompleteList.innerHTML = "";
+
+    if (!input) return;
+
+    const suggestions = pesertaList.filter(nama =>
+      nama.toLowerCase().includes(input)
+    ).slice(0, 10);
+
+    suggestions.forEach(nama => {
+      const li = document.createElement("li");
+      li.textContent = nama;
+      li.addEventListener("click", function () {
+        nameInput.value = nama;
+        autocompleteList.innerHTML = "";
+      });
+      autocompleteList.appendChild(li);
+    });
+  });
+
+  document.addEventListener("click", function (e) {
+    if (e.target !== nameInput) {
+      autocompleteList.innerHTML = "";
+    }
+  });
+});
+</script>
+
 </body>
 
 </html>
