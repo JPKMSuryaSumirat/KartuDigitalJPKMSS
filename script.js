@@ -3,15 +3,14 @@ window.addEventListener("DOMContentLoaded", function () {
     event.preventDefault();
 
     function normalizeText(text) {
-    return text
+      return text
         ?.toLowerCase()
         .trim()
         .replace(/\s+/g, " "); // hapus spasi ganda
-}
+    }
 
     const nameInput = normalizeText(document.getElementById("name").value);
     const packageInput = normalizeText(document.getElementById("package").value);
-
 
     const loadingElement = document.getElementById("loading");
     const resultElement = document.getElementById("result");
@@ -30,19 +29,21 @@ window.addEventListener("DOMContentLoaded", function () {
         const list = data["Peserta_11-07-2025"] || [];
 
         const peserta = list.find((item) => {
-    const nama = normalizeText(item["Nama Member"]);
-    const jenisPaket = normalizeText(item["Paket"]);
+          const nama = normalizeText(item["Nama Member"]);
+          const jenisPaket = normalizeText(item["Paket"]);
 
-    const matchNama = nameInput && nama === nameInput;
+          const matchNama = nameInput && nama === nameInput;
 
-    if (packageInput === "siswa" || packageInput === "mahasiswa") {
-        return matchNama && (jenisPaket === "siswa" || jenisPaket === "mahasiswa");
-    } else if (packageInput === "umum") {
-        return matchNama && jenisPaket !== "siswa" && jenisPaket !== "mahasiswa";
-    }
+          if (packageInput === "siswa") {
+            return matchNama && jenisPaket.includes("siswa");
+          } else if (packageInput === "mahasiswa") {
+            return matchNama && jenisPaket.includes("mahasiswa");
+          } else if (packageInput === "umum") {
+            return matchNama && !jenisPaket.includes("siswa") && !jenisPaket.includes("mahasiswa");
+          }
 
-    return false;
-});
+          return false;
+        });
 
         loadingElement.style.display = "none";
 
@@ -103,11 +104,12 @@ window.addEventListener("DOMContentLoaded", function () {
           document.getElementById("field-klinik").textContent = peserta["Klinik Layanan"];
           document.getElementById("field-plafon").textContent = peserta["Kode Plafond"];
           document.getElementById("field-gigi").textContent = peserta["Paket Tambahan"];
-          document.getElementById("field-masaberlaku").textContent = `${peserta["Tanggal Masuk"]} s.d ${peserta["Tanggal Akhir Kontrak"]}`;
+          document.getElementById("field-masaberlaku").textContent =
+            `${peserta["Tanggal Masuk"]} s.d ${peserta["Tanggal Akhir Kontrak"]}`;
 
-          // Nama Paket hanya untuk Siswa
+          // Tampilkan nama paket persis sesuai JSON jika mengandung kata SISWA atau MAHASISWA
           const namaPaketField = document.getElementById("field-namapaket");
-         if (jenisPaket === "SISWA" || jenisPaket === "MAHASISWA") {
+          if (jenisPaket.includes("SISWA") || jenisPaket.includes("MAHASISWA")) {
             namaPaketField.textContent = peserta["Paket"];
             namaPaketField.style.display = "block";
           } else {
