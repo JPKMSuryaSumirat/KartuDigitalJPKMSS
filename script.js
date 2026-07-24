@@ -23,7 +23,7 @@ window.addEventListener("DOMContentLoaded", function () {
     resultElement.style.display = "none";
     notFoundElement.style.display = "none";
 
-    fetch("Peserta%20JPKM%20s.d%2010%20Juli%202025%20New.json")
+    fetch("data.json")
       .then((response) => response.json())
       .then((data) => {
         const list = data["Peserta_11-07-2025"] || [];
