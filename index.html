@@ -405,11 +405,10 @@ document.addEventListener("DOMContentLoaded", function () {
   const autocompleteList = document.getElementById("autocomplete-list");
   let pesertaList = [];
 
-  fetch("Peserta%20JPKM%20s.d%2010%20Juli%202025%20New.json")
-    .then((response) => response.json())
-    .then((data) => {
-      pesertaList = (data["Peserta_11-07-2025"] || []).map(item => item["Nama Member"]);
-    });
+  pesertaList = (data.peserta || [])
+  .map(item => item["Nama Member"])
+  .filter(Boolean)
+  .sort((a, b) => a.localeCompare(b));
 
   nameInput.addEventListener("input", function () {
     const input = this.value.toLowerCase();
