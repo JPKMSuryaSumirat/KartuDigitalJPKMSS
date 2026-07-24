@@ -1,16 +1,17 @@
-window.addEventListener("DOMContentLoaded", function () {
-  document.getElementById("identity-form").addEventListener("submit", function (event) {
-    event.preventDefault();
+let pesertaList = [];
 
-    function normalizeText(text) {
-      return text
-        ?.toLowerCase()
+function normalizeText(text) {
+    return (text || "")
+        .toLowerCase()
         .trim()
-        .replace(/\s+/g, " "); // hapus spasi ganda
-    }
+        .replace(/\s+/g, " ");
+}
 
-    const nameInput = normalizeText(document.getElementById("name").value);
-    const packageInput = normalizeText(document.getElementById("package").value);
+window.addEventListener("DOMContentLoaded", () => {
+
+    const form = document.getElementById("identity-form");
+    const nameInput = document.getElementById("name");
+    const packageInput = document.getElementById("package");
 
     const loadingElement = document.getElementById("loading");
     const resultElement = document.getElementById("result");
@@ -19,121 +20,214 @@ window.addEventListener("DOMContentLoaded", function () {
     const kartuContainer = document.getElementById("kartu-container");
     const kartuGambar = document.getElementById("kartu-gambar");
 
+    const autocompleteList = document.getElementById("autocomplete-list");
+
     loadingElement.style.display = "block";
-    resultElement.style.display = "none";
-    notFoundElement.style.display = "none";
 
     fetch("data.json")
-  .then((response) => response.json())
-  .then((data) => {
-    const list = data.peserta || [];
-    // proses pencarian tetap sama
-  });
+        .then(res => res.json())
+        .then(data => {
 
-        const peserta = list.find((item) => {
-          const nama = normalizeText(item["Nama Member"]);
-          const jenisPaket = normalizeText(item["Paket"]);
+            pesertaList = data.peserta || [];
 
-          const matchNama = nameInput && nama === nameInput;
+            loadingElement.style.display = "none";
 
-          if (packageInput === "siswa" || packageInput === "siswa santo aloysius") {
-            return matchNama && jenisPaket.includes("siswa");
-          } else if (packageInput === "paket mahasiswa") {
-            return matchNama && jenisPaket.includes("paket");
-          } else if (packageInput === "umum") {
-            return matchNama && !jenisPaket.includes("siswa") && !jenisPaket.includes("mahasiswa");
-          }
+        })
+        .catch(err => {
 
-          return false;
+            console.error(err);
+
+            loadingElement.style.display = "none";
+
+            alert("Gagal memuat data.");
+
         });
 
-        loadingElement.style.display = "none";
+    // =============================
+    // AUTOCOMPLETE
+    // =============================
 
-        if (peserta) {
-          const jenisPaket = peserta["Paket"]?.toUpperCase();
-          let cssClass = "";
-          let gambar = "";
+    nameInput.addEventListener("input", function () {
 
-          switch (jenisPaket) {
+        autocompleteList.innerHTML = "";
+
+        const keyword = this.value.toLowerCase();
+
+        if (!keyword) return;
+
+        const hasil = pesertaList
+            .filter(item =>
+                item["Nama Member"] &&
+                item["Nama Member"].toLowerCase().includes(keyword)
+            )
+            .slice(0, 10);
+
+        hasil.forEach(item => {
+
+            const li = document.createElement("li");
+
+            li.textContent = item["Nama Member"];
+
+            li.onclick = function () {
+
+                nameInput.value = item["Nama Member"];
+
+                autocompleteList.innerHTML = "";
+
+            };
+
+            autocompleteList.appendChild(li);
+
+        });
+
+    });
+
+    document.addEventListener("click", function (e) {
+
+        if (e.target !== nameInput) {
+
+            autocompleteList.innerHTML = "";
+
+        }
+
+    });
+
+    // =============================
+    // FORM CARI
+    // =============================
+
+    form.addEventListener("submit", function (e) {
+
+        e.preventDefault();
+
+        resultElement.style.display = "none";
+        notFoundElement.style.display = "none";
+
+        const namaCari = normalizeText(nameInput.value);
+        const paketCari = normalizeText(packageInput.value);
+
+        const peserta = pesertaList.find(item => {
+
+            const nama = normalizeText(item["Nama Member"]);
+            const paket = normalizeText(item["Paket"]);
+
+            const matchNama = nama === namaCari;
+
+            if (paketCari === "siswa" || paketCari === "siswa santo aloysius") {
+                return matchNama && paket.includes("siswa");
+            }
+
+            if (paketCari === "paket mahasiswa") {
+                return matchNama && paket.includes("mahasiswa");
+            }
+
+            if (paketCari === "umum") {
+                return matchNama &&
+                    !paket.includes("siswa") &&
+                    !paket.includes("mahasiswa");
+            }
+
+            return false;
+
+        });
+
+        if (!peserta) {
+
+            notFoundElement.style.display = "block";
+
+            return;
+
+        }
+
+        let cssClass = "";
+        let gambar = "";
+
+        switch ((peserta["Paket"] || "").toUpperCase()) {
+
             case "SISWA SANTO ALOYSIUS":
-              cssClass = "kartu-aloysius";
-              gambar = "Kartu Peserta Siswa Aloysius Kosong Untuk Web Kartu DepanBelakang.jpg";
-              break;
+                cssClass = "kartu-aloysius";
+                gambar = "Kartu Peserta Siswa Aloysius Kosong Untuk Web Kartu DepanBelakang.jpg";
+                break;
+
             case "SISWA":
             case "MAHASISWA":
-              cssClass = "kartu-siswa";
-              gambar = "Kartu Peserta Siswa Kosong Untuk Web Kartu DepanBelakang.jpg";
-              break;
+                cssClass = "kartu-siswa";
+                gambar = "Kartu Peserta Siswa Kosong Untuk Web Kartu DepanBelakang.jpg";
+                break;
+
             case "DASAR PLUS":
-              cssClass = "kartu-dasarplus";
-              gambar = "Kartu Peserta Dasar Plus Kosong Untuk Web Kartu DepanBelakang.jpg";
-              break;
+                cssClass = "kartu-dasarplus";
+                gambar = "Kartu Peserta Dasar Plus Kosong Untuk Web Kartu DepanBelakang.jpg";
+                break;
+
             case "PRIMER":
-              cssClass = "kartu-primer";
-              gambar = "Kartu Peserta Primer Kosong Untuk Web Kartu DepanBelakang.jpg";
-              break;
+                cssClass = "kartu-primer";
+                gambar = "Kartu Peserta Primer Kosong Untuk Web Kartu DepanBelakang.jpg";
+                break;
+
             case "MIX":
-              cssClass = "kartu-mix";
-              gambar = "Kartu Peserta Mix Kosong Untuk Web Kartu DepanBelakang.jpg";
-              break;
+                cssClass = "kartu-mix";
+                gambar = "Kartu Peserta Mix Kosong Untuk Web Kartu DepanBelakang.jpg";
+                break;
+
             case "ADVANCED":
-              cssClass = "kartu-advanced";
-              gambar = "Kartu Peserta Advanced Kosong Untuk Web Kartu DepanBelakang.jpg";
-              break;
+                cssClass = "kartu-advanced";
+                gambar = "Kartu Peserta Advanced Kosong Untuk Web Kartu DepanBelakang.jpg";
+                break;
+
             case "EXECUTIVE":
-              cssClass = "kartu-executive";
-              gambar = "Kartu Peserta Executive Kosong Untuk Web Kartu DepanBelakang.jpg";
-              break;
+                cssClass = "kartu-executive";
+                gambar = "Kartu Peserta Executive Kosong Untuk Web Kartu DepanBelakang.jpg";
+                break;
+
             case "PLATINUM":
-              cssClass = "kartu-platinum";
-              gambar = "Kartu Peserta Platinum Kosong Untuk Web Kartu DepanBelakang.jpg";
-              break;
+                cssClass = "kartu-platinum";
+                gambar = "Kartu Peserta Platinum Kosong Untuk Web Kartu DepanBelakang.jpg";
+                break;
+
             case "KEUSKUPAN":
-              cssClass = "kartu-keuskupan";
-              gambar = "Kartu Peserta Keuskupan Kosong Untuk Web Kartu DepanBelakang.jpg";
-              break;
+                cssClass = "kartu-keuskupan";
+                gambar = "Kartu Peserta Keuskupan Kosong Untuk Web Kartu DepanBelakang.jpg";
+                break;
+
             default:
-              cssClass = "kartu-siswa";
-              gambar = "Kartu Peserta Siswa Kosong Untuk Web Kartu DepanBelakang.jpg";
-          }
+                cssClass = "kartu-siswa";
+                gambar = "Kartu Peserta Siswa Kosong Untuk Web Kartu DepanBelakang.jpg";
 
-          // Set class dan gambar kartu
-          kartuContainer.className = `kartu-container ${cssClass}`;
-          kartuGambar.src = gambar;
+        }
 
-          // Isi data ke kartu
-          document.getElementById("field-nama").textContent = peserta["Nama Member"];
-          document.getElementById("field-nojpkm").textContent = peserta["No JPKM"];
-          document.getElementById("field-namagrup").textContent = peserta["Grup"];
-          document.getElementById("field-ppkbasis").textContent = peserta["PPK Basis"];
-          document.getElementById("field-tgllahir").textContent = peserta["Tanggal Lahir"];
-          document.getElementById("field-klinik").textContent = peserta["Klinik Layanan"];
-          document.getElementById("field-plafon").textContent = peserta["Kode Plafond"];
-          document.getElementById("field-gigi").textContent = peserta["Paket Tambahan"];
-          document.getElementById("field-masaberlaku").textContent =
+        kartuContainer.className = `kartu-container ${cssClass}`;
+        kartuGambar.src = gambar;
+
+        document.getElementById("field-nama").textContent = peserta["Nama Member"];
+        document.getElementById("field-nojpkm").textContent = peserta["No JPKM"];
+        document.getElementById("field-namagrup").textContent = peserta["Grup"];
+        document.getElementById("field-ppkbasis").textContent = peserta["PPK Basis"];
+        document.getElementById("field-tgllahir").textContent = peserta["Tanggal Lahir"];
+        document.getElementById("field-klinik").textContent = peserta["Klinik Layanan"];
+        document.getElementById("field-plafon").textContent = peserta["Kode Plafond"];
+        document.getElementById("field-gigi").textContent = peserta["Paket Tambahan"];
+        document.getElementById("field-masaberlaku").textContent =
             `${peserta["Tanggal Masuk"]} s.d ${peserta["Tanggal Akhir Kontrak"]}`;
 
-          // Tampilkan nama paket persis sesuai JSON jika mengandung kata SISWA atau MAHASISWA
-          const namaPaketField = document.getElementById("field-namapaket");
-          if (jenisPaket.includes("SISWA") || jenisPaket.includes("MAHASISWA")) {
-            namaPaketField.textContent = peserta["Paket"];
-            namaPaketField.style.display = "block";
-          } else {
-            namaPaketField.textContent = "";
-            namaPaketField.style.display = "none";
-          }
+        const namaPaket = document.getElementById("field-namapaket");
 
-          resultElement.style.display = "block";
+        if (
+            peserta["Paket"].toUpperCase().includes("SISWA") ||
+            peserta["Paket"].toUpperCase().includes("MAHASISWA")
+        ) {
+
+            namaPaket.textContent = peserta["Paket"];
+            namaPaket.style.display = "block";
+
         } else {
-          notFoundElement.style.display = "block";
+
+            namaPaket.style.display = "none";
+
         }
-      })
-      .catch((error) => {
-        loadingElement.style.display = "none";
-        notFoundElement.style.display = "block";
-        console.error("Terjadi kesalahan:", error);
-      });
-  });
+
+        resultElement.style.display = "block";
+
+    });
+
 });
-
-
