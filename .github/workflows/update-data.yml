@@ -3,9 +3,9 @@ name: Update JSON from Excel
 on:
   push:
     paths:
-      - 'data.xlsx'
-      - 'scripts/**'
-      - '.github/workflows/**'
+      - "data.xlsx"
+      - "scripts/**"
+      - ".github/workflows/**"
 
 jobs:
   convert:
@@ -15,21 +15,21 @@ jobs:
       contents: write
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Python
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
-      - name: Install Packages
+      - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Convert Excel
+      - name: Convert Excel to JSON
         run: python scripts/excel_to_json.py
 
-      - name: Commit JSON
+      - name: Commit updated JSON
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
@@ -37,6 +37,6 @@ jobs:
           git add data.json
 
           git diff --cached --quiet || (
-            git commit -m "Update data.json"
+            git commit -m "Update data.json from Excel"
             git push
           )
