@@ -4,21 +4,21 @@ import json
 EXCEL_FILE = "data.xlsx"
 JSON_FILE = "data.json"
 
-# Membaca sheet pertama
+# Membaca sheet pertama dari Excel
 df = pd.read_excel(EXCEL_FILE)
 
-# Menghilangkan kolom kosong
+# Menghapus kolom yang seluruhnya kosong
 df = df.dropna(axis=1, how="all")
 
 # Mengubah NaN menjadi string kosong
 df = df.fillna("")
 
-# Convert menjadi list dictionary
+# Convert menjadi list of dictionary
 records = df.to_dict(orient="records")
 
-# Format JSON mengikuti struktur lama website
+# Format JSON baru
 output = {
-    "Peserta_11-07-2025": records
+    "peserta": records
 }
 
 with open(JSON_FILE, "w", encoding="utf-8") as f:
