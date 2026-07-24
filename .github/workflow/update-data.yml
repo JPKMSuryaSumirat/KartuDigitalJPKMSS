@@ -27,7 +27,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Convert Excel to JSON
-        run: python scripts/excel_to_json.py
+        run: python script/excel_to_json.py
 
       - name: Commit updated JSON
         run: |
