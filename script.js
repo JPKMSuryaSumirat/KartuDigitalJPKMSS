@@ -24,9 +24,11 @@ window.addEventListener("DOMContentLoaded", function () {
     notFoundElement.style.display = "none";
 
     fetch("data.json")
-      .then((response) => response.json())
-      .then((data) => {
-        const list = data["Peserta_11-07-2025"] || [];
+  .then((response) => response.json())
+  .then((data) => {
+    const list = data.peserta || [];
+    // proses pencarian tetap sama
+  });
 
         const peserta = list.find((item) => {
           const nama = normalizeText(item["Nama Member"]);
