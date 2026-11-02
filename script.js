@@ -1,4 +1,4 @@
-window.addEventListener("DOMContentLoaded", function () {
+#window.addEventListener("DOMContentLoaded", function () {
   document.getElementById("identity-form").addEventListener("submit", function (event) {
     event.preventDefault();
 
